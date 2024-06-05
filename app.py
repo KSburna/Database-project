@@ -14,6 +14,14 @@ from db_init import create_app
 from db_init import db
 from model import UserDetails, Product
 
+# Create the logger
+logger = logging.getLogger('failed_login_attempts')
+logger.setLevel(logging.INFO)
+
+# Create a file handler
+handler = logging.FileHandler('failed_login_attempts.log')
+logger.addHandler(handler)
+
 app = create_app(os.getenv("CONFIG_MODE"))
 
 app.secret_key = '12345678'
@@ -40,6 +48,7 @@ def home():
 
     return render_template('index.html', products=products)
 
+
 @app.route('/login')
 # ‘/login’ URL is bound with login() function.
 def login():
@@ -64,11 +73,53 @@ def login():
     #  if user landed to loging page after registraion, user will see a regisration success message
     if registered:
         return render_template('login.html',
-                success_message='You have successfully been registered. please login...')
+                               success_message='You have successfully been registered. please login...')
     if error_msg:
         return render_template('login.html',
-                error_message=error_msg)
+                               error_message=error_msg)
     return render_template('login.html')
+
+
+@app.route('/login', methods=['POST'])
+# ‘/login’ URL is bound with login_action() function.
+def login_action():
+    """
+    Perform login action.
+
+    This fnuction is bound to the '/login' URL and handles POST requests.
+    It retrieves the email and password from the request form, attempts to authenticate
+    the user, and if successful, saves the email in the session and redirects the user to
+    the cart page. If the authentication fails, it rendres the login page again with an
+    error message indicating invalid login credentials.
+
+    Returns:
+        If authentication is successful, redirects the user to the cart page.
+        If authentication fails, renders the 'login.html' template with an error message.
+
+    Raises:
+        An erro: If 'email' or 'password' fields are missing in the request form.
+    """
+    #  get email and password from request
+    email = request.form['email']
+    password = request.form['password']
+    #authenticate user and if login credentials are valid save email in
+    #session and redirect user to cart page
+
+    logged_user = authenticate_user(email, password)
+
+    if logged_user:
+        session['user'] = logged_user  # Store email in session
+        return redirect(url_for('home'))
+
+    # Log the failed login attempt
+    ip_address = request.remote_addr
+    logger.info("Failed login attempt for EMAIL :: %s from IP :: %s address at TIME :: %s",
+                email, ip_address, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+    #show an error message to the user if login credentials are not valid.
+    return render_template('login.html', email=email, password=password,
+                           error_message='Invalid login credentials!')
+
 
 @app.route('/register', methods=['GET'])
 # ‘/register’ URL is bound with register() function.
@@ -219,6 +270,37 @@ def get_product_by_id(product_id):
 
 def get_all_products():
     return db.session.query(Product).all()
+
+
+# this method authenticate user with username and password
+def authenticate_user(email, password):
+    """
+    Authenticates user with email & password.
+
+    This method chec if the provided email and password match any users
+    credentials stored in DB
+
+    Args:
+        email (str):  email to authenticate.
+        password (str): password to authenticate.
+
+    Returns:
+       user:  if the email and password match, ifnot otherwise.
+    """
+
+    # Retrieve the user details based on the provided email
+    user = UserDetails.query.filter_by(email=email).first()
+
+    # Check if a user with the provided email exists and if the password matches
+    if user and user.check_password(password):
+        return {
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            'role': user.role
+        }
+    else:
+        return None
 
 
 if __name__ == '__main__':
