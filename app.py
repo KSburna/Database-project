@@ -79,6 +79,14 @@ def login():
                                error_message=error_msg)
     return render_template('login.html')
 
+@app.route('/about')
+def about():
+    if 'user' in session:
+        return render_template('about.html', username=session[
+            'user']['name'])
+
+    return render_template('about.html')
+
 
 @app.route('/login', methods=['POST'])
 # ‘/login’ URL is bound with login_action() function.
