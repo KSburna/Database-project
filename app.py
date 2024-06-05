@@ -40,6 +40,36 @@ def home():
 
     return render_template('index.html', products=products)
 
+@app.route('/login')
+# ‘/login’ URL is bound with login() function.
+def login():
+    """
+    Render the login page.
+
+    Thisfunction chceks whether the user is already logged-in. If user is logged in,
+    it redirects them to cart page.If the user arrived at the login page after registration,
+    they will see a registration success message.
+
+    Returns:
+        A rendered template of 'login.html'. If the user is logged in, it may also redirect
+        them to the cart page. If the user arrived after registration,
+        they will see a success message.
+    """
+    # check whether user is logged or not
+    if 'username' in session:
+        return redirect(url_for('cart'))  # redirect to cart page if user is already logged
+    registered = request.args.get('registered')  # get registered url parameter
+    error_msg = request.args.get('error_msg')  # get registered url parameter
+
+    #  if user landed to loging page after registraion, user will see a regisration success message
+    if registered:
+        return render_template('login.html',
+                success_message='You have successfully been registered. please login...')
+    if error_msg:
+        return render_template('login.html',
+                error_message=error_msg)
+    return render_template('login.html')
+
 @app.route('/register', methods=['GET'])
 # ‘/register’ URL is bound with register() function.
 def register():

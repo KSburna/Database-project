@@ -159,3 +159,51 @@
     background-color: #555;
 }
 
+/* Login page styles */
+.container.login {
+    max-width: 500px;
+    margin: 0 auto; /* Align to center */
+    padding: 20px;
+}
+
+
+.login form {
+    margin-bottom: 20px;
+}
+
+.login .form-group {
+    margin-bottom: 15px;
+}
+
+.login label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login input[type="email"],
+.login input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.login input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.login button[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login button[type="submit"]:hover {
+    background-color: #555;
+}
+
