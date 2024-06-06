@@ -1,5 +1,8 @@
 let slideIndex = 0;
-showSlides();
+
+if (window.location.pathname === '/about') {
+    showSlides();
+}
 
 function showSlides() {
     let i;
@@ -24,7 +27,8 @@ function moveSlide(n) {
     slides[slideIndex-1].style.display = "block";
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+if (window.location.pathname === '/checkout') {
+    document.addEventListener('DOMContentLoaded', function() {
     const incrementButtons = document.querySelectorAll('.increment');
     const decrementButtons = document.querySelectorAll('.decrement');
     const quantityInput = document.querySelector('input[name="quantity"]');
@@ -71,28 +75,31 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementsByClassName("quantity-input")[0].value = quantity
     }
 });
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-    const rememberCheckbox = document.getElementById('remember');
-    const emailInput = document.getElementById('email');
+if (window.location.pathname === '/login') {
+    document.addEventListener('DOMContentLoaded', function () {
+        const rememberCheckbox = document.getElementById('remember');
+        const emailInput = document.getElementById('email');
 
-    // Check if the email is stored in local storage
-    const storedEmail = localStorage.getItem('rememberedEmail');
-    if (storedEmail) {
-        emailInput.value = storedEmail;
-        rememberCheckbox.checked = true;
-    }
-
-    rememberCheckbox.addEventListener('change', function() {
-        if (rememberCheckbox.checked) {
-            // If the checkbox is checked, store the email in local storage
-            localStorage.setItem('rememberedEmail', emailInput.value);
-        } else {
-            // If the checkbox is unchecked, remove the stored email from local storage
-            localStorage.removeItem('rememberedEmail');
+        // Check if the email is stored in local storage
+        const storedEmail = localStorage.getItem('rememberedEmail');
+        if (storedEmail) {
+            emailInput.value = storedEmail;
+            rememberCheckbox.checked = true;
         }
+
+        rememberCheckbox.addEventListener('change', function () {
+            if (rememberCheckbox.checked) {
+                // If the checkbox is checked, store the email in local storage
+                localStorage.setItem('rememberedEmail', emailInput.value);
+            } else {
+                // If the checkbox is unchecked, remove the stored email from local storage
+                localStorage.removeItem('rememberedEmail');
+            }
+        });
     });
-});
+}
 
 function checkPasswordMatch() {
     var password = document.getElementById("password").value;
