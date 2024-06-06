@@ -12,7 +12,7 @@ from flask import Flask, request, redirect, url_for, session
 from flask import render_template
 from db_init import create_app
 from db_init import db
-from model import UserDetails, Product
+from model import UserDetails, Product, OrderDetails
 
 # Create the logger
 logger = logging.getLogger('failed_login_attempts')
@@ -218,6 +218,32 @@ def checkout():
         return render_template('checkout.html', username=username, product=product)
     # return login page to the user if user does not have an active session
     return redirect(url_for('login'))
+
+@app.route('/pay', methods=['POST'])
+def pay():
+    if request.method == 'POST':
+        # Get the order details from the form
+        user_id = session['user']['id']
+        delivery_address = request.form.get('delivery_address')
+        product_id = request.form.get('product_id')
+        quantity = int(request.form.get('quantity'))
+        product = get_product_by_id(product_id)
+        price = float(product.price)
+        total = price*quantity
+
+        # Save the order details to the DB
+        order_details = OrderDetails(username=user_id,
+                                     product_id=product_id,
+                                     delivery_address=delivery_address,
+                                     product_name=product.name,
+                                     quantity=quantity,
+                                     price=price,
+                                     total=total)
+
+        db.session.add(order_details)
+        db.session.commit()
+
+        return redirect(url_for('orders'))
 
 
 # this method check if email already exists
