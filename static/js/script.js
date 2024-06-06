@@ -71,3 +71,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementsByClassName("quantity-input")[0].value = quantity
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const rememberCheckbox = document.getElementById('remember');
+    const emailInput = document.getElementById('email');
+
+    // Check if the email is stored in local storage
+    const storedEmail = localStorage.getItem('rememberedEmail');
+    if (storedEmail) {
+        emailInput.value = storedEmail;
+        rememberCheckbox.checked = true;
+    }
+
+    rememberCheckbox.addEventListener('change', function() {
+        if (rememberCheckbox.checked) {
+            // If the checkbox is checked, store the email in local storage
+            localStorage.setItem('rememberedEmail', emailInput.value);
+        } else {
+            // If the checkbox is unchecked, remove the stored email from local storage
+            localStorage.removeItem('rememberedEmail');
+        }
+    });
+});
