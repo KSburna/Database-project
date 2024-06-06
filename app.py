@@ -206,6 +206,20 @@ def register_action():
     return redirect(url_for('login', registered=True))
 
 
+@app.route('/checkout')
+# ‘/’ URL is bound with checkout() function.
+def checkout():
+    # check whether user is logged or not
+    if 'user' in session:
+        product_id = request.args.get('id')
+        product = get_product_by_id(product_id)
+        # if user has a active session get the username from the session
+        username = session['user']['name']
+        return render_template('checkout.html', username=username, product=product)
+    # return login page to the user if user does not have an active session
+    return redirect(url_for('login'))
+
+
 # this method check if email already exists
 def is_email_exist(email):
     """
