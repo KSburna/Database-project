@@ -221,6 +221,95 @@ def orders():
     return redirect(url_for('login'))
 
 
+@app.route('/password-update')
+# ‘/’ URL is bound with password_update() function.
+def password_update():
+    """
+    Render the password update page.
+
+    If  user has n active session, the function get the username from the session.
+    If the user is logged in, it renders the password update page. If there's a success message
+    parameter in the URL, it's displayed to the user. If the user is not logged in, it redirects
+    them to the login page with an error message.
+
+    Returns:
+        If the user is logged in, renders the password update page.
+        If the user is not logged in, redirects to login page with an error message
+    """
+
+    # check whether user is logged or not
+    if 'user' in session:
+        success_msg = request.args.get('success_msg')  # get registered url parameter
+        if success_msg:
+            return render_template('password-update.html',
+                                   username=session['user']['name'],
+                                   success_message=success_msg)
+        return render_template('password-update.html', username=session['user']['name'])
+
+    # return login page to the user if user does not have an active session
+    return redirect(url_for('login',
+                            error_msg='you are required to log-in to perform password update'))
+
+
+@app.route('/password-update', methods=['POST'])
+def password_update_action():
+    """
+    Update password action
+    """
+    # Get new password which is submitted by the user
+    new_password = request.form['password']
+
+    error_message = None
+
+    # Check password complexity
+    if not is_valid_password(new_password):
+        error_message = ('Password must be at least 12 characters long and contain at least'
+                         ' 1 uppercase, 1 lowercase, 1 number, and 1 special character')
+
+    email = session['user']['email']
+
+    # Update the password in the db if there are no errors
+    if error_message is None:
+        # Retrieve the user from the database
+        user = UserDetails.query.filter_by(email=email).first()
+
+        if user:
+            # Set the new password
+            user.set_password(new_password)
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            # Redirect to password update page with success message
+            return redirect(url_for('password_update', success_msg=
+            'Your password has been successfully updated.'))
+
+        else:
+            error_message = 'User not found.'
+
+    # If there are errors, render the template with the error message
+    return render_template('password-update.html', error_message=error_message,
+                           username=session['user']['name'])
+
+
+@app.route('/logout')
+# ‘/’ URL is bound with logout() function.
+def logout():
+    """
+    Logout user.
+
+    This function remove username from session, in roder to logging out the user.
+    After removing the username from session, it redirect  user to  login page.
+
+    Returns:
+        Redirects to the login page after removing the username from the session.
+    """
+    # Remove the username from the session if it's there
+    session.pop('user', None)
+    # after remove username from sesion, redirect the user to login page
+    return redirect(url_for('login'))
+
+
 def fetch_orders_by_id(user_id):
     """
     Fetch orders from the database by user ID.

@@ -331,3 +331,53 @@
     margin: 5px 0;
 }
 
+/* Password Update page styles */
+.container.password-update {
+    max-width: 500px;
+    margin: 0 auto; /* Align to center */
+    padding: 20px;
+}
+
+.password-update form {
+    margin-bottom: 20px;
+}
+
+.password-update .form-group {
+    margin-bottom: 15px;
+}
+
+.password-update label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.password-update input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.password-update input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.password-update button[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.password-update button[type="submit"]:hover {
+    background-color: #555;
+}
+
+.password-update p {
+    margin-top: 20px;
+}
+
