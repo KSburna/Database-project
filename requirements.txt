@@ -10,3 +10,4 @@ python-dotenv>=0.20
 psycopg2-binary>=2.9
 bcrypt
 Flask-Migrate
+waitress==3.0.0
