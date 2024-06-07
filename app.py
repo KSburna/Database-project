@@ -3,7 +3,6 @@ Module docstring: This module provides functionality
 for Cellmart wesite developed using flask.
 """
 import re
-import json
 import logging
 import os
 
@@ -497,5 +496,32 @@ def authenticate_user(email, password):
         return None
 
 
+def insert_default_products():
+    default_products = [
+        {"id": 1, "name": "iphone 15 pro", "price": 1199.0, "image_name": "iphone-15-pro.png"},
+        {"id": 2, "name": "Oneplus 9", "price": 799.0, "image_name": "oneplus-9.png"},
+        {"id": 3, "name": "Samsung S24 ultra", "price": 1299.0, "image_name": "s24-ultra.png"},
+        {"id": 4, "name": "Xiaomi mi 11", "price": 599.0, "image_name": "xiaomi-mi-11.png"},
+        {"id": 5, "name": "iPhone 13 pro", "price": 1000.0, "image_name": "iphone 13 pro.jpeg"}
+    ]
+
+    for product in default_products:
+        existing_product = Product.query.filter_by(id=product["id"]).first()
+        if not existing_product:
+            new_product = Product(
+                id=product["id"],
+                name=product["name"],
+                price=product["price"],
+                image_name=product["image_name"]
+            )
+            db.session.add(new_product)
+    db.session.commit()
+
+
+with app.app_context():
+    insert_default_products()
+
 if __name__ == '__main__':
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=10000)
     app.run()
