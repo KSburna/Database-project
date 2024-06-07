@@ -24,7 +24,8 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable=False)
     image_name = db.Column(db.String(256), nullable=False)
 
-    def __init__(self, name, price, image_name):
+    def __init__(self, id, name, price, image_name):
+        self.id = id
         self.name = name
         self.price = price
         self.image_name = image_name
