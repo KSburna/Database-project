@@ -19,7 +19,13 @@
                 <p>Price: ${{ order.price }}</p>
                 <p>Total: ${{ order.total }}</p>
                 <p>Delivery address: {{ order.delivery_address }}</p>
+                <form action="{{ url_for('cancel_order') }}" method="post" class="cancel-order-form">
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    <button type="submit" class="cancel-button">Cancel Order</button>
+                </form>
             </div>
+            {% else %}
+            <p>No orders found.</p>
             {% endfor %}
         </div>
     </div>

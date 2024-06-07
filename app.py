@@ -379,6 +379,19 @@ def pay():
         return redirect(url_for('orders'))
 
 
+@app.route('/cancel-order', methods=['POST'])
+def cancel_order():
+    order_id = request.form.get('order_id')
+    order = OrderDetails.query.get(order_id)
+
+    if order:
+        db.session.delete(order)
+        db.session.commit()
+        return redirect(url_for('orders'))
+
+    return redirect(url_for('orders'))
+
+
 # this method check if email already exists
 def is_email_exist(email):
     """

@@ -330,6 +330,19 @@
 .order p {
     margin: 5px 0;
 }
+.cancel-button {
+    background-color: #ff4c4c;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.cancel-button:hover {
+    background-color: #e60000;
+}
 
 /* Password Update page styles */
 .container.password-update {
