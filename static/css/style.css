@@ -308,3 +308,26 @@
     background-color: #555;
 }
 
+/*Orders page styles*/
+.container.orders {
+    max-width: 800px;
+    margin: 0 auto; /* Center the container */
+    padding: 20px;
+}
+
+.order-list {
+    margin-top: 20px;
+}
+
+.order {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.order p {
+    margin: 5px 0;
+}
+

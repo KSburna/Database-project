@@ -79,6 +79,7 @@ def login():
                                error_message=error_msg)
     return render_template('login.html')
 
+
 @app.route('/about')
 def about():
     if 'user' in session:
@@ -206,6 +207,48 @@ def register_action():
     return redirect(url_for('login', registered=True))
 
 
+@app.route('/orders')
+# ‘/’ URL is bound with orders() function.
+def orders():
+    # check whether user is logged or not
+    if 'user' in session:
+        # if user has a active session get the username from the session
+        name = session['user']['name']
+        userId = session['user']['id']
+        user_orders = fetch_orders_by_id(userId)
+        return render_template('my-orders.html', username=name, orders=user_orders)
+    # return login page to the user if user does not have an active session
+    return redirect(url_for('login'))
+
+
+def fetch_orders_by_id(user_id):
+    """
+    Fetch orders from the database by user ID.
+
+    Args:
+        user_id (int): The ID of the user to fetch orders for.
+
+    Returns:
+        list: A list of orders for the given user ID.
+    """
+    orders = OrderDetails.query.filter_by(username=user_id).all()
+
+    orders_list = []
+    for order in orders:
+        orders_list.append({
+            'id': order.id,
+            'username': order.username,
+            'product_id': order.product_id,
+            'delivery_address': order.delivery_address,
+            'product_name': order.product_name,
+            'quantity': order.quantity,
+            'price': order.price,
+            'total': order.total
+        })
+
+    return orders_list
+
+
 @app.route('/checkout')
 # ‘/’ URL is bound with checkout() function.
 def checkout():
@@ -219,6 +262,7 @@ def checkout():
     # return login page to the user if user does not have an active session
     return redirect(url_for('login'))
 
+
 @app.route('/pay', methods=['POST'])
 def pay():
     if request.method == 'POST':
@@ -229,7 +273,7 @@ def pay():
         quantity = int(request.form.get('quantity'))
         product = get_product_by_id(product_id)
         price = float(product.price)
-        total = price*quantity
+        total = price * quantity
 
         # Save the order details to the DB
         order_details = OrderDetails(username=user_id,
